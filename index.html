@@ -59,37 +59,85 @@
         video.srcObject = stream; // 视频元素绑定 Canvas 流
         video.play();
 
+        // // 样式配置
+        // const clockStyle = {
+        //     font: 'bold 290px Arial, sans-serif', // 更大的字体
+        //     color: 'white',
+        //     background: 'black',
+        //     textAlign: 'center',
+        // };
+
+        // // 绘制时钟
+        // function drawClock() {
+        //     ctx.fillStyle = clockStyle.background;
+        //     ctx.fillRect(0, 0, canvas.width, canvas.height); // 填充背景
+
+        //     // 获取当前时间
+        //     const now = new Date();
+        //     // const timeString = now.toLocaleTimeString();
+        //     // 获取当前时间的各个部分
+        //     const hours = now.getHours().toString().padStart(2, '0');
+        //     const minutes = now.getMinutes().toString().padStart(2, '0');
+        //     const seconds = now.getSeconds().toString().padStart(2, '0');
+        //     const milliseconds = now.getMilliseconds().toString().padStart(3, '0'); // 毫秒
+        //     // 格式化时间字符串：时:分:秒.毫秒
+        //     const timeString = `${hours}:${minutes}:${seconds}.${milliseconds}`;
+
+        //     // 绘制时间
+        //     ctx.font = clockStyle.font;
+        //     ctx.fillStyle = clockStyle.color;
+        //     ctx.textAlign = clockStyle.textAlign;
+        //     ctx.textBaseline = 'middle';
+        //     ctx.fillText(timeString, canvas.width / 2, canvas.height / 2); // 居中绘制时间
+
+        //     requestAnimationFrame(drawClock);
+        // }
+
+        
         // 样式配置
         const clockStyle = {
-            font: 'bold 290px Arial, sans-serif', // 更大的字体
+            fontMain: 'bold 340px Arial, sans-serif', // 主时间的字体
+            fontMilliseconds: 'bold 200px Arial, sans-serif', // 毫秒的字体
             color: 'white',
             background: 'black',
             textAlign: 'center',
         };
-
+        
         // 绘制时钟
         function drawClock() {
             ctx.fillStyle = clockStyle.background;
             ctx.fillRect(0, 0, canvas.width, canvas.height); // 填充背景
-
+        
             // 获取当前时间
             const now = new Date();
-            // const timeString = now.toLocaleTimeString();
-            // 获取当前时间的各个部分
             const hours = now.getHours().toString().padStart(2, '0');
             const minutes = now.getMinutes().toString().padStart(2, '0');
             const seconds = now.getSeconds().toString().padStart(2, '0');
-            const milliseconds = now.getMilliseconds().toString().padStart(3, '0'); // 毫秒
-            // 格式化时间字符串：时:分:秒.毫秒
-            const timeString = `${hours}:${minutes}:${seconds}.${milliseconds}`;
-
-            // 绘制时间
-            ctx.font = clockStyle.font;
+            const milliseconds = now.getMilliseconds().toString().padStart(3, '0');
+        
+            const timeString = `${hours}:${minutes}:${seconds}`; // 时分秒部分
+        
+            // 绘制主时间部分（小时:分钟:秒）
+            ctx.font = clockStyle.fontMain;
             ctx.fillStyle = clockStyle.color;
             ctx.textAlign = clockStyle.textAlign;
             ctx.textBaseline = 'middle';
-            ctx.fillText(timeString, canvas.width / 2, canvas.height / 2); // 居中绘制时间
-
+        
+            // 计算主时间文本的宽度
+            const timeWidth = ctx.measureText(timeString).width;
+        
+            // 绘制主时间
+            ctx.fillText(timeString, canvas.width/1.35 - timeWidth / 2, canvas.height / 2);
+        
+            // 绘制毫秒部分（小字体）
+            ctx.font = clockStyle.fontMilliseconds;
+            const millisecondsX = canvas.width / 2 + timeWidth / 2 + 10; // 毫秒部分紧随主时间右侧
+            ctx.fillText(
+                `.${milliseconds}`, // 加上毫秒部分
+                millisecondsX,
+                canvas.height / 2
+            );
+            
             requestAnimationFrame(drawClock);
         }
 
