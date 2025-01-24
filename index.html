@@ -61,7 +61,7 @@
 
         // 样式配置
         const clockStyle = {
-            font: 'bold 450px Arial, sans-serif', // 更大的字体
+            font: 'bold 310px Arial, sans-serif', // 更大的字体
             color: 'white',
             background: 'black',
             textAlign: 'center',
@@ -74,7 +74,14 @@
 
             // 获取当前时间
             const now = new Date();
-            const timeString = now.toLocaleTimeString();
+            // const timeString = now.toLocaleTimeString();
+            // 获取当前时间的各个部分
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+            const milliseconds = now.getMilliseconds().toString().padStart(3, '0'); // 毫秒
+            // 格式化时间字符串：时:分:秒.毫秒
+            const timeString = `${hours}:${minutes}:${seconds}.${milliseconds}`;
 
             // 绘制时间
             ctx.font = clockStyle.font;
