@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FloatingClock</title>
+        <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #000; /* 背景颜色为黑色 */
+        }
+        video {
+            border: 5px solid white; /* 添加白色边框 */
+            border-radius: 15px; /* 圆角边框 */
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5); /* 添加阴影效果 */
+        }
+        button {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: white;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+        button:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <video id="videoElement" width="640" height="360" controls autoplay muted></video>
+    <button id="pipButton">画中画</button>
+
+    <script>
+        const video = document.getElementById('videoElement');
+        const pipButton = document.getElementById('pipButton');
+
+        // 创建一个高分辨率 Canvas
+        const canvas = document.createElement('canvas');
+        const width = 1920; // 宽度分辨率
+        const height = 1080; // 高度分辨率
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+
+        // 将 Canvas 转为视频流
+        const stream = canvas.captureStream(30); // 每秒 30 帧
+        video.srcObject = stream; // 视频元素绑定 Canvas 流
+        video.play();
+
+        // 样式配置
+        const clockStyle = {
+            font: 'bold 450px Arial, sans-serif', // 更大的字体
+            color: 'white',
+            background: 'black',
+            textAlign: 'center',
+        };
+
+        // 绘制时钟
+        function drawClock() {
+            ctx.fillStyle = clockStyle.background;
+            ctx.fillRect(0, 0, canvas.width, canvas.height); // 填充背景
+
+            // 获取当前时间
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+
+            // 绘制时间
+            ctx.font = clockStyle.font;
+            ctx.fillStyle = clockStyle.color;
+            ctx.textAlign = clockStyle.textAlign;
+            ctx.textBaseline = 'middle';
+            ctx.fillText(timeString, canvas.width / 2, canvas.height / 2); // 居中绘制时间
+
+            requestAnimationFrame(drawClock);
+        }
+
+        // 开始绘制时钟
+        drawClock();
+
+        // 点击按钮进入画中画模式
+        pipButton.addEventListener('click', async () => {
+            try {
+                if (document.pictureInPictureEnabled) {
+                    await video.requestPictureInPicture();
+                } else {
+                    alert('Picture-in-Picture is not supported in your browser.');
+                }
+            } catch (error) {
+                console.error('Error entering Picture-in-Picture mode:', error);
+            }
+        });
+
+        // 监听退出画中画事件
+        video.addEventListener('leavepictureinpicture', () => {
+            console.log('Exited Picture-in-Picture mode');
+        });
+    </script>
+</body>
+</html>
